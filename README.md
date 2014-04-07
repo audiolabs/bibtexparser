@@ -13,7 +13,7 @@ Add audiolabs/bibtexparser as a requirement to composer.json:
 ```json
 {
     "require": {
-        "audiolabs/bibtexparser": "0.1.*"
+        "audiolabs/bibtexparser": "dev-master"
     }
 }
 ```
