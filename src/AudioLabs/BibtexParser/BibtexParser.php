@@ -61,7 +61,10 @@ class BibtexParser
 
                 if($handle == 'pages') {
                     preg_match('%(\d+)\s*\-+\s*(\d+)%', $data, $matches);
-                    $value = array('start' => $matches[1], 'end' => $matches[2]);
+                   if(count($matches) > 2)
+                        $value = array('start' => $matches[1], 'end' => $matches[2]);
+                    else
+                        $value = $data;
                 }
                 elseif($handle == 'author') {
                     $value = explode(' and ', $data);
