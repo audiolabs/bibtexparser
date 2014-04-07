@@ -4,15 +4,15 @@ namespace AudioLabs\BibtexParser;
 
 class BibtexParser
 {
-    function parse_file($filename) {
-        return $this->parse_lines(file($filename));
+    static function parse_file($filename) {
+        return self::parse_lines(file($filename));
     }
 
-    function parse_string($data) {
-        return $this->parse_lines(preg_split('/\n/', $data));
+    static function parse_string($data) {
+        return self::parse_lines(preg_split('/\n/', $data));
     }
 
-    function parse_lines($lines) {
+    static function parse_lines($lines) {
         $items = array();
         $count = -1;
 
@@ -85,7 +85,7 @@ class BibtexParser
             $items[$count]['raw'] .= $line . "\n";
 
             if($value != "") {
-                $items[$count][$handle] = $this->cleanup($value);
+                $items[$count][$handle] = self::cleanup($value);
             }
             if(count($items) > 0) {
                 $items[$count]['lines']['end'] = $number + 1;
@@ -94,10 +94,10 @@ class BibtexParser
         return $items;
     }
 
-    function cleanup($value) {
+    static function cleanup($value) {
         // call cleanup() recursively if passed an array (authors or pages).
         if(is_array($value)) {
-            return array_map(array($this, 'cleanup'), $value);
+            return array_map(array('\AudioLabs\BibtexParser\BibtexParser', 'cleanup'), $value);
         }
 
         // replace a bunch of LaTeX stuff
