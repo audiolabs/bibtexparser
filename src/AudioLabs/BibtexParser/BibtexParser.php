@@ -4,108 +4,114 @@ namespace AudioLabs\BibtexParser;
 
 class BibtexParser
 {
-    static function parse_file($filename) {
-        return self::parse_lines(file($filename));
+    public static function parseFile($filename)
+    {
+        return self::parseLines(file($filename));
     }
 
-    static function parse_string($data) {
-        return self::parse_lines(preg_split('/\n/', $data));
+    public static function parseString($data)
+    {
+        return self::parseLines(preg_split('/\n/', $data));
     }
 
-    static function parse_lines($lines) {
+    public static function parseLines($lines)
+    {
         $items = array();
         $count = -1;
 
-        if (!$lines)
+        if (!$lines) {
             return;
+        }
 
-        foreach($lines as $number => $line) {
+        foreach ($lines as $number => $line) {
             $line = trim($line);
 
             // empty line
-            if (!strlen($line))
+            if (!strlen($line)) {
                 continue;
+            }
 
             // some funny comment string
-            if (strpos(strtolower($line),'@string')!==false)
+            if (strpos(strtolower($line), '@string') !== false) {
                 continue;
+            }
 
             // pybliographer comments
-            if (strpos(strtolower($line),'@comment')!==false)
+            if (strpos(strtolower($line), '@comment') !== false) {
                 continue;
+            }
 
             // normal TeX style comment
-            if ($line[0] == "%")
+            if ($line[0] == "%") {
                 continue;
+            }
 
             // begins with @, for example @inproceedings{...}
             if ($line[0] == "@") {
                 $count++;
-                $handle="";
-                $value="";
-                $data="";
-                $start=strpos($line,'@');
-                $end=strpos($line,'{');
+                $handle = "";
+                $value = "";
+                $data = "";
+                $start = strpos($line, '@');
+                $end = strpos($line, '{');
                 $items[$count] = array();
                 $items[$count]['raw'] = "";
-                $items[$count]['type'] = trim(substr($line, 1,$end-1));
-                $items[$count]['reference'] = trim(substr($line, $end+1), ', ');
+                $items[$count]['type'] = trim(substr($line, 1, $end - 1));
+                $items[$count]['reference'] = trim(substr($line, $end + 1), ', ');
                 $items[$count]['lines'] = array('start' => $number + 1, 'end' => $number + 1);
-            }
+            } elseif (substr_count($line, '=') > 0) { // contains =, for example authors = {...}
+                $start = strpos($line, '=');
+                $handle = strtolower(trim(substr($line, 0, $start)));
+                $data = trim(substr($line, $start+1));
 
-            // contains =, for example authors = {...}
-            elseif (substr_count($line, '=') > 0) {
-                $start = strpos($line,'=');
-                $handle = strtolower(trim(substr($line,0,$start)));
-                $data = trim(substr($line,$start+1));
-
-                if($handle == 'pages') {
+                if ($handle == 'pages') {
                     preg_match('%(\d+)\s*\-+\s*(\d+)%', $data, $matches);
-                   if(count($matches) > 2)
+                    if (count($matches) > 2) {
                         $value = array('start' => $matches[1], 'end' => $matches[2]);
-                    else
+                    } else {
                         $value = $data;
-                }
-                elseif($handle == 'author') {
+                    }
+                } elseif ($handle == 'author') {
                     $value = explode(' and ', $data);
-
-                }
-                else {
+                } else {
                     $value = $data;
                 }
-            }
-
-            // neither a new block nor a new field: a following line of a multiline field
-            else {
-                if(!is_array($value)) {
+            } else { // neither a new block nor a new field: a following line of a multiline field
+                if (!is_array($value)) {
                     $value.= ' ' . $line;
                 }
             }
 
             $items[$count]['raw'] .= $line . "\n";
 
-            if($value != "") {
+            if ($value != "") {
                 $items[$count][$handle] = self::cleanup($value);
             }
-            if(count($items) > 0) {
+            if (count($items) > 0) {
                 $items[$count]['lines']['end'] = $number + 1;
             }
         }
         return $items;
     }
 
-    static function cleanup($value) {
+    public static function cleanup($value)
+    {
         // call cleanup() recursively if passed an array (authors or pages).
-        if(is_array($value)) {
-            return array_map(array('\AudioLabs\BibtexParser\BibtexParser', 'cleanup'), $value);
+        if (is_array($value)) {
+            return array_map(
+                array('\AudioLabs\BibtexParser\BibtexParser', 'cleanup'),
+                $value
+            );
         }
 
         // replace a bunch of LaTeX stuff
-        $search = array('\"a', '\"A', '\"o', '\"O', '\"u', '\U"', '\ss', '\`e', '\´e', '\url{', '{', '}', '--',      '\"', '\'', '`', '\textbackslash');
-        $replace = array('ä',  'Ä',   'ö',   'Ö',   'ü',   'Ü',   'ß',   'è',   'é',   '',      '',  '',  '&mdash;', ' ',  ' ',  ' ', '\\');
-        $value=str_replace($search,$replace,$value);
+        $search = array('\"a', '\"A', '\"o', '\"O', '\"u', '\U"', '\ss', '\`e', '\´e',
+            '\url{', '{', '}', '--', '\"', '\'', '`', '\textbackslash');
+        $replace = array('ä', 'Ä', 'ö', 'Ö', 'ü', 'Ü', 'ß', 'è', 'é', '', '', '',
+            '&mdash;', ' ', ' ', ' ', '\\');
+        $value = str_replace($search, $replace, $value);
 
-        $value=rtrim($value, '}, ');
+        $value = rtrim($value, '}, ');
         return trim($value);
     }
 }
