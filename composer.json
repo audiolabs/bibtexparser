@@ -11,6 +11,11 @@
             "email": "nils.werner@audiolabs-erlangen.de",
             "homepage": "http://www.audiolabs-erlangen.de",
             "role": "Developer"
+        },
+        {
+            "name": "Nikolai Neff",
+            "email": "admin@flatplane.de",
+            "homepage": "https://flatplane.de"
         }
     ],
     "require": {
