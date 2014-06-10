@@ -99,7 +99,7 @@ class BibtexParser
         // call cleanup() recursively if passed an array (authors or pages).
         if (is_array($value)) {
             return array_map(
-                array('\AudioLabs\BibtexParser\BibtexParser', 'cleanup'),
+                array('\de\flatplane\BibtexParser\BibtexParser', 'cleanup'),
                 $value
             );
         }
