@@ -3,17 +3,23 @@ BibtexParser
 
 Bibtex parser for PHP, autoloading- and composer-compliant.
 
-[![Build Status](https://travis-ci.org/audiolabs/bibtexparser.png?branch=master)](https://travis-ci.org/audiolabs/bibtexparser)
+[![Build Status](https://travis-ci.org/Gefrierbrand/bibtexparser.svg?branch=master)](https://travis-ci.org/Gefrierbrand/bibtexparser)
 
 
 ## Installation
 
-Add audiolabs/bibtexparser as a requirement to composer.json:
+Add flatplane/bibtexparser as a requirement to composer.json:
 
 ```json
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Gefrierbrand/bibtexparser"
+        }
+    ],
     "require": {
-        "audiolabs/bibtexparser": "dev-master"
+        "flatplane/bibtexparser": "dev-master"
     }
 }
 ```
