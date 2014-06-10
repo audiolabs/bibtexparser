@@ -2,7 +2,7 @@
 
 namespace de\flatplane\BibtexParser\Tests;
 
-use AudioLabs\BibtexParser\BibtexParser;
+use de\flatplane\BibtexParser\BibtexParser;
 
 class BibtexParserTest extends \PHPUnit_Framework_TestCase
 {
