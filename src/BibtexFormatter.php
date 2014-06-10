@@ -1,6 +1,6 @@
 <?php
 
-namespace AudioLabs\BibtexParser;
+namespace de\flatplane\BibtexParser;
 
 class BibtexFormatter
 {

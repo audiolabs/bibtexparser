@@ -1,6 +1,6 @@
 <?php
 
-namespace AudioLabs\BibtexParser;
+namespace de\flatplane\BibtexParser;
 
 class BibtexParser
 {
@@ -109,9 +109,7 @@ class BibtexParser
             '\url{', '{', '}', '--', '\"', '\'', '`', '\textbackslash');
         $replace = array('ä', 'Ä', 'ö', 'Ö', 'ü', 'Ü', 'ß', 'è', 'é', '', '', '',
             '&mdash;', ' ', ' ', ' ', '\\');
-        $value = str_replace($search, $replace, $value);
-
-        $value = rtrim($value, '}, ');
+        $value = rtrim(str_replace($search, $replace, $value), '}, ');
         return trim($value);
     }
 }
