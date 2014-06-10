@@ -1,10 +1,10 @@
 <?php
 
-namespace AudioLabs\BibtexParser;
+namespace de\flatplane\BibtexParser;
 
 class BibtexFormatter
 {
-    static function format($entry)
+    public static function format($entry)
     {
         $body = self::buildBody($entry);
 
@@ -16,61 +16,55 @@ class BibtexFormatter
             if (!empty($entry[$key])) {
 
                 // Arrays need special treatment
-                if(is_array($entry[$key])) {
-                    if($key == 'author') {
+                if (is_array($entry[$key])) {
+                    if ($key == 'author') {
                         $data = implode($entry[$key], ' and ');
-                    }
-                    elseif($key == 'pages' && is_array($entry[$key])) {
+                    } elseif ($key == 'pages' && is_array($entry[$key])) {
                         $data = $entry[$key]['start'] . '&mdash;' . $entry[$key]['end'];
-                    }
-                    else {
+                    } else {
                         $data = "";
                     }
-                }
-
-                // Regular strings are simply used as-is
-                else {
+                } else { // Regular strings are simply used as-is
                     $data = $entry[$key];
                 }
 
                 $body = str_ireplace($placeholder[0][$j], $data, $body);
-
             }
-
         }
 
         return self::removeOptionalFields($body);
     }
 
-    static function buildBody($entry)
+    public static function buildBody($entry)
     {
 
         $type = strtolower($entry['type']);
-        if ($type == "article")
+        if ($type == "article") {
             return "{author}<br/> <strong>{title}</strong><br/>{journal}[, {volume}][({number})][: {pages}], {year}. [<br>{dbslinks}]";
-        elseif ($type == "book")
+        } elseif ($type == "book") {
             return "{author}<br/> <strong>{title}</strong><br/>{publisher}[, ISBN: {isbn}], {year}. [<br>{dbslinks}]";
-        elseif ($type == "incollection")
+        } elseif ($type == "incollection") {
             return "{author}<br/> <strong>{title}</strong><br/>In[ {editor} (ed.)]: {booktitle}, {publisher}[, {volume}][: {pages}], {year}. [<br>{dbslinks}]";
-        elseif ($type == "proceedings")
+        } elseif ($type == "proceedings") {
             return "[{author}<br/> ]<strong>{title}</strong><br/>[In {booktitle}, ]{year}. [<br>{dbslinks}]";
-        elseif ($type == "inproceedings")
+        } elseif ($type == "inproceedings") {
             return "{author}<br/> <strong>{title}</strong><br/>In {booktitle}, {year}. [<br>{dbslinks}]";
-        elseif ($type == "mastersthesis")
+        } elseif ($type == "mastersthesis") {
             return "{author}<br/> <strong>{title}</strong><br/>[{note},] {school}, {year}. [<br>{dbslinks}]";
-        elseif ($type == "misc")
+        } elseif ($type == "misc") {
             return "[{author}<br/>][ <strong>{title}</strong><br/>][{howpublished}, ][{note}][, {year}]. [<br>{dbslinks}]";
-        elseif ($type == "phdthesis")
+        } elseif ($type == "phdthesis") {
             return "{author}<br/> <strong>{title}</strong><br/>PhD Thesis, {school}, {year}. [<br>{dbslinks}]";
-        elseif ($type == "techreport")
+        } elseif ($type == "techreport") {
             return "{author}<br/> <strong>{title}</strong><br/>Technical Report, [No. {number}, ]{institution}, {year}. [<br>{dbslinks}]";
-        elseif ($type == "unpublished")
+        } elseif ($type == "unpublished") {
             return "{author}<br/> <strong>{title}</strong><br/>{note}. [<br>{dbslinks}]";
-        else
+        } else {
             return "{author}<br/> <strong>{title}</strong><br/>{journal}{booktitle}, {year} [<br>{dbslinks}]";
+        }
     }
 
-    static function removeOptionalFields($entry)
+    public static function removeOptionalFields($entry)
     {
         $save = 10; // just to avoid an inf. loop
         do {

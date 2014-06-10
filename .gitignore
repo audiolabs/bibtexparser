@@ -1,3 +1,2 @@
-/vendor/
-profile.txt
-dev.php
+/nbproject/*
+/vendor/*
