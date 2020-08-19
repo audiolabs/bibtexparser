@@ -18,7 +18,7 @@ class BibtexFormatter
                 // Arrays need special treatment
                 if(is_array($entry[$key])) {
                     if($key == 'author') {
-                        $data = implode($entry[$key], ' and ');
+                        $data = implode(' and ', $entry[$key]);
                     }
                     elseif($key == 'pages' && is_array($entry[$key])) {
                         $data = $entry[$key]['start'] . '&mdash;' . $entry[$key]['end'];
