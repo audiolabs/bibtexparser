@@ -106,6 +106,7 @@ class BibtexParser
         $value=str_replace($search,$replace,$value);
 
         $value=rtrim($value, '}, ');
+        $value = trim($value, '"');
         return trim($value);
     }
 }
